@@ -62,8 +62,9 @@ module.exports = function(params, callback) {
       items += `</li>`;
     }
   });
-  console.log(items);
   toc('#toc-list').append(items);
+  $(id).append(toc.html());
+
   params.content = $.html();
   callback();
 };
