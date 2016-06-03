@@ -45,8 +45,10 @@ module.exports = function(params, callback) {
   $(id).append(toc.html()
        .replace(/(<li>\s*<ul>\s*)+/g, '<li><ul>')
        .replace(/(<\/ul>\s*<\/li>\s*)+/g, '</ul></li>')
-       .replace( /(<\/li>\s*<\/ul>\s*<\/li>\s*<li>\s*<ul>\s*<li>)/g, '</li><li>'));
-
+       .replace( /(<\/li>\s*<\/ul>\s*<\/li>\s*<li>\s*<ul>\s*<li>)/g, '</li><li>')
+       .replace('<li><ul>','<ul>')
+       .replace('</ul></li>','</ul>'));
+// I've added two replaces to help get a proper structure out of the TOC
   params.content = $.html();
   callback();
 };
