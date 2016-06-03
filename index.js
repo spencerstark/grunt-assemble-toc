@@ -1,8 +1,7 @@
 /*!
- * grunt-assemble-toc <git://github.com/assemble/grunt-assemble-toc.git>
- *
- * Copyright (c) 2013-2015, Brian Woodward.
- * Licensed under the MIT License.
+ * Modified variant of grunt assemble toc to better fit our project. 
+ * Author: Spencer Stark
+ * 
  */
 
 var options = {
@@ -33,22 +32,38 @@ module.exports = function(params, callback) {
 
   // get all the anchor tags from inside the headers
   var anchors = $('h1 a[name],h2 a[name],h3 a[name],h4 a[name]');
-  anchors.map(function(i, e) {
-    var text  = $(e.parent).text().trim();
-    var link  = e.attribs.name
-    var depth = parseInt(e.parent.name.replace(/h/gi, ''), 10);
 
-    var arr = new Array(depth);
-    var level = arr.join('<li><ul>') + '<li><a href="#' + link + '">' + text + '</a></li>' + arr.join('</ul></li>');
-    toc('#toc-list').append(level);
+  //---------------------------------------------------------
+  // This is where we create the TOC. 
+  //---------------------------------------------------------
+  var pageMenu = '<div class="Page-menu"><ul></ul></div>',
+      items = '',
+      subitems = '';
+  anchors.each(function(i, e) {
+    var text = $(e.parent).text().trim(),
+        link = e.attribs.name,
+        depth = parseInt(e.parent.name.replace(/h/gi, ''), 10);
+    if (depth == 1){
+      children = [];
+      var children = $(this).parent().nextUntil('h1', 'h2');
+
+      items += `<li><a href="#${link}">${text}</a>`;
+      if (children.length > 0) {
+        subitems = '<ul>';
+        children.each(function() {
+          var childText = $(this).text(),
+            childId = $(this).attr('id');
+
+          subitems += `<li><a href="#${childId}">${childText}</a></li>`;
+        });
+        subitems += '</ul>';
+        items += subitems;
+      }
+      items += `</li>`;
+    }
   });
-  $(id).append(toc.html()
-       .replace(/(<li>\s*<ul>\s*)+/g, '<li><ul>')
-       .replace(/(<\/ul>\s*<\/li>\s*)+/g, '</ul></li>')
-       .replace( /(<\/li>\s*<\/ul>\s*<\/li>\s*<li>\s*<ul>\s*<li>)/g, '</li><li>')
-       .replace('<li><ul>','<ul>')
-       .replace('</ul></li>','</ul>'));
-// I've added two replaces to help get a proper structure out of the TOC
+  console.log(items);
+  toc('#toc-list').append(items);
   params.content = $.html();
   callback();
 };
