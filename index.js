@@ -35,8 +35,8 @@ module.exports = function(params, callback) {
   //---------------------------------------------------------
   var items = '',
       subitems = '';
-
-  $('.Markdown h1').each(function() {
+  // We specifically call out markdown's direct H1s because some examples use H1. 
+  $('.Markdown > h1').each(function() {
     var text = $(this).text(),
         id = $(this).attr('id'),
         children = $(this).nextUntil('h1', 'h2');
