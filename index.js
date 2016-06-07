@@ -59,7 +59,6 @@ module.exports = function(params, callback) {
   toc('#toc-list').append(items);
   $(id).append(toc.html());
   
-  $('.Markdown').addClass('has-menu');
   $('#toc').addClass('Page-menu');
 
   params.content = $.html();
